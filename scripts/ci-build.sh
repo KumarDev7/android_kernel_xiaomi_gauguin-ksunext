@@ -80,7 +80,7 @@ log "configure (stock ikconfig + fragment + olddefconfig)"
 mkdir -p "$OUT"
 cp stock-ikconfig.txt "$OUT/.config"
 cat "$ROOT/arch/arm64/configs/vendor/xiaomi/gauguin-ksu-susfs.config" >> "$OUT/.config"
-make olddefconfig $MAKE_FLAGS >/dev/null
+(cd "$ROOT" && make olddefconfig $MAKE_FLAGS >/dev/null)
 diff <(grep -E '^(CONFIG_|# CONFIG_)' stock-ikconfig.txt | sort) \
      <(grep -E '^(CONFIG_|# CONFIG_)' "$OUT/.config" | sort) > config-diff.txt || true
 # gates: any stock-side symbol we LOST is an error; additions only from the
@@ -97,7 +97,7 @@ grep -q '^CONFIG_KSU_SUSFS=y' "$OUT/.config" || fail "CONFIG_KSU_SUSFS not enabl
 grep -q '^# CONFIG_KPROBES is not set' "$OUT/.config" || fail "KPROBES must stay off (manual hooks)"
 
 log "build Image + dtbs"
-make Image dtbs $MAKE_FLAGS -j"$(nproc)"
+(cd "$ROOT" && make Image dtbs $MAKE_FLAGS -j"$(nproc)")
 IMAGE="$OUT/arch/arm64/boot/Image"
 DTB="$OUT/arch/arm64/boot/dts/vendor/qcom/lagoon.dtb"
 
