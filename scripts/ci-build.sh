@@ -28,7 +28,15 @@ export PATH="$TC/bin:$PATH"
 
 log "toolchain"
 if [ ! -x "$TC/bin/clang" ]; then
-  mkdir -p "$TC" && curl -sL -o /tmp/clang.tar.gz "$TC_URL"
+  mkdir -p "$TC"
+  for _ in 1 2 3 4 5; do
+    curl -sL --retry 5 --retry-delay 10 --retry-all-errors \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -o /tmp/clang.tar.gz "$TC_URL"
+    [ "$(head -c 2 /tmp/clang.tar.gz)" == $'\x1f\x8b' ] && break
+    echo "toolchain download not gzip, retrying…"; rm -f /tmp/clang.tar.gz; sleep 15
+  done
+  [ "$(head -c 2 /tmp/clang.tar.gz)" == $'\x1f\x8b' ] || fail "toolchain download failed"
   tar -xzf /tmp/clang.tar.gz -C "$TC" && rm /tmp/clang.tar.gz
   # tolerate varying archive layout (flatten one level if needed)
   [ -x "$TC/bin/clang" ] || { mv "$TC" "$TC.tmp"; mv "$TC.tmp"/clang "$TC"; rmdir "$TC.tmp"; }
