@@ -63,7 +63,7 @@ mkdir -p "$WORK" && cd "$WORK"
 "$MAGISKBOOT" unpack "$ROOT/boot.img"
 mv kernel stock-kernel
 mv dtb stock-dtb
-"$MAGISKBOOT" decompress stock-kernel stock-Image
+"$MAGISKBOOT" decompress stock-kernel stock-Image 2>/dev/null || cp stock-kernel stock-Image  # raw kernel needs no decompression
 "$ROOT/scripts/extract-ikconfig" stock-Image > stock-ikconfig.txt
 [ -s stock-ikconfig.txt ] || fail "could not extract stock IKCONFIG"
 wc -l stock-ikconfig.txt
