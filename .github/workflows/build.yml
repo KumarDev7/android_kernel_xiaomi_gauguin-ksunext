@@ -1,0 +1,33 @@
+name: build-kernel-release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * 1" # weekly: pick up new official LineageOS builds
+
+concurrency:
+  group: build-release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            bc bison flex build-essential libssl-dev libxml2 python3 lz4 curl
+      - name: build + release
+        run: |
+          chmod +x scripts/ci-build.sh tools/magiskboot
+          ./scripts/ci-build.sh
