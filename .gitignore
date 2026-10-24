@@ -1,0 +1,9 @@
+out/
+out2/
+*.o
+*.cmd
+*.orig
+*.rej
+*.a
+*.symtypes
+.scmversion
