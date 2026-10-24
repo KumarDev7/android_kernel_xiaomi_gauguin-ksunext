@@ -41,9 +41,11 @@ LATEST=$(echo "$API" | python3 -c '
 import sys,json
 d=json.load(sys.stdin)
 r=d["response"] if isinstance(d,dict) else d
-print(max(r,key=lambda b:int(b["datetime"]))["url"])')
+b=max(r,key=lambda x:int(x["datetime"]))
+f=next(f for f in b["files"] if f["filename"]=="boot.img")
+print(f["url"])')
 BUILDID=$(echo "$LATEST" | awk -F/ '{print $(NF-1)}')
-BOOT_URL="${LATEST%/*}/boot.img"
+BOOT_URL="$LATEST"
 echo "build dir : $BUILDID"
 echo "boot url  : $BOOT_URL"
 TAG="ksu-next-$BUILDID"
