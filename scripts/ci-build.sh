@@ -85,11 +85,11 @@ diff <(grep -E '^(CONFIG_|# CONFIG_)' stock-ikconfig.txt | sort) \
      <(grep -E '^(CONFIG_|# CONFIG_)' "$OUT/.config" | sort) > config-diff.txt || true
 # gates: any stock-side symbol we LOST is an error; additions only from the
 # KSU/SUSFS fragment + benign toolchain-version strings
-TOOLCH='^(CONFIG_(AS_VERSION|CLANG_VERSION|LLD_VERSION|CC_VERSION_TEXT|CC_HAS_AUTO_VAR_INIT_ZERO_(BARE|ENABLER)))'
+TOOLCH='CONFIG_(AS_VERSION|CLANG_VERSION|LLD_VERSION|CC_VERSION_TEXT|CC_HAS_AUTO_VAR_INIT_ZERO_(BARE|ENABLER))'
 if grep '^<' config-diff.txt | grep -vE "$TOOLCH" | grep -q .; then
   fail "config lost stock symbols:$(grep '^<' config-diff.txt | head)"
 fi
-if grep '^>' config-diff.txt | grep -vE '(CONFIG_(KSU|KSU_|KPROBES)|# CONFIG_KSU|'"$(echo "$TOOLCH" | sed 's/\^//')"')' | grep -q .; then
+if grep '^>' config-diff.txt | grep -vE '(CONFIG_(KSU|KSU_|KPROBES)|# CONFIG_KSU|'"$TOOLCH"')' | grep -q .; then
   fail "unexpected config additions:$(grep '^>' config-diff.txt | grep -vE '(CONFIG_(KSU|KSU_|KPROBES)|# CONFIG_KSU)' | head)"
 fi
 grep -q '^CONFIG_KSU=y' "$OUT/.config" || fail "CONFIG_KSU not enabled"
