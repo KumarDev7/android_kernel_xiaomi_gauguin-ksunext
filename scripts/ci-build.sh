@@ -37,7 +37,11 @@ clang --version | head -1
 
 log "lineageos latest build"
 API=$(curl -s "https://download.lineageos.org/api/v2/devices/gauguin/builds")
-LATEST=$(echo "$API" | python3 -c 'import sys,json;r=json.load(sys.stdin)["response"];print(max(r,key=lambda b:int(b["datetime"]))["url"])')
+LATEST=$(echo "$API" | python3 -c '
+import sys,json
+d=json.load(sys.stdin)
+r=d["response"] if isinstance(d,dict) else d
+print(max(r,key=lambda b:int(b["datetime"]))["url"])')
 BUILDID=$(echo "$LATEST" | awk -F/ '{print $(NF-1)}')
 BOOT_URL="${LATEST%/*}/boot.img"
 echo "build dir : $BUILDID"
