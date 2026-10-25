@@ -192,3 +192,14 @@ gh release create "$TAG" "$BOOTART" "$BOOTART.sha256" \
   --title "KernelSU-Next v1.1.1 + susfs 1.5.5 — LineageOS $BUILDID" \
   --notes-file RELEASE_NOTES.md
 echo "release $TAG published"
+
+log "retention: keep newest 3 releases"
+OLD=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq '.[3:][] | .tag_name')
+while IFS= read -r OT; do
+  [ -n "$OT" ] || continue
+  if gh release delete "$OT" -y --cleanup-tag -R "$GITHUB_REPOSITORY"; then
+    echo "deleted old release: $OT"
+  else
+    echo "could not delete old release: $OT"
+  fi
+done <<< "$OLD"

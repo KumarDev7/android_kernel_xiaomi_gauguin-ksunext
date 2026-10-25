@@ -24,6 +24,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # full history: the upstream-merge step needs a merge base
+      - name: cache toolchain
+        uses: actions/cache@v4
+        with:
+          path: tools/clang
+          key: clang-14.0.6-20261011-ZyC
       - name: install build deps
         run: |
           sudo apt-get update
