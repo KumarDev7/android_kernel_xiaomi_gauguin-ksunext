@@ -97,7 +97,7 @@ else
 fi
 [ -d drivers/kernelsu ] || fail "merge dropped drivers/kernelsu"
 TAG="ksu-next-$BUILDID"
-if gh release view "$TAG" >/dev/null 2>&1; then
+if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
   echo "release $TAG already exists — nothing to do"
   echo "skip=true" >> "$GITHUB_OUTPUT" 2>/dev/null || true
   echo "SKIP_BUILD=1" >> "$GITHUB_ENV"; exit 0
@@ -187,7 +187,7 @@ Pair with: KernelSU_Next_v1.1.1_12851-release.apk (same folder).
 Rollback: stock boot.img for this build (LineageOS mirror, sha above).
 EOF
 cd "$ROOT"
-gh release create "$TAG" "$BOOTART" "$BOOTART.sha256" \
+gh release create "$TAG" -R "$GITHUB_REPOSITORY" "$BOOTART" "$BOOTART.sha256" \
   KernelSU_Next_v1.1.1_12851-release.apk RELEASE_NOTES.md \
   --title "KernelSU-Next v1.1.1 + susfs 1.5.5 — LineageOS $BUILDID" \
   --notes-file RELEASE_NOTES.md
