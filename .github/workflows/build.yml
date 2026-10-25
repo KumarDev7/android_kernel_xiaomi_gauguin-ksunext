@@ -22,6 +22,8 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history: the upstream-merge step needs a merge base
       - name: install build deps
         run: |
           sudo apt-get update
