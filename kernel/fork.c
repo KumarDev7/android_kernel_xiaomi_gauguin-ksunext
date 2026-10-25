@@ -12,6 +12,7 @@
  */
 
 #include <linux/anon_inodes.h>
+#include <linux/susfs_def.h>
 #include <linux/slab.h>
 #include <linux/sched/autogroup.h>
 #include <linux/sched/mm.h>
