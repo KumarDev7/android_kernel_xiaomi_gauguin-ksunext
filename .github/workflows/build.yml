@@ -16,24 +16,27 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 350
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # full history: the upstream-merge step needs a merge base
+          fetch-depth: 0
+
       - name: cache toolchain
         uses: actions/cache@v4
         with:
           path: tools/clang
           key: clang-14.0.6-20261011-ZyC
+
       - name: install build deps
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            bc bison flex build-essential libssl-dev libxml2 python3 lz4 curl
+            bc bison flex build-essential libssl-dev libxml2-dev python3 lz4 curl
+
       - name: build + release
         run: |
           chmod +x scripts/ci-build.sh tools/magiskboot
