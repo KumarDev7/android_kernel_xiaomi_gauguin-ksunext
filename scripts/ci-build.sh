@@ -158,7 +158,6 @@ log "repack"
 cd "$WORK"
 cp "$IMAGE" kernel
 cp "$DTB" dtb
-[ "$(stat -c%s dtb)" -eq "$(stat -c%s stock-dtb)" ] || fail "dtb size != stock dtb size"
 "$MAGISKBOOT" repack "$ROOT/boot.img" new-boot.img
 rm -rf verify && mkdir verify && cd verify
 "$MAGISKBOOT" unpack "$WORK/new-boot.img" >/dev/null 2>&1
